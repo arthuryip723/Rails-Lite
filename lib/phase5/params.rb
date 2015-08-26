@@ -12,13 +12,8 @@ module Phase5
     def initialize(req, route_params = {})
       # p route_params
       @params = route_params
-      if req.query_string
-        @params.merge!(parse_www_encoded_form(req.query_string))
-      end
-
-      if req.body
-        @params.merge!(parse_www_encoded_form(req.body))
-      end
+      @params.merge!(parse_www_encoded_form(req.query_string)) if req.query_string
+      @params.merge!(parse_www_encoded_form(req.body)) if req.body
     end
 
     def [](key)
@@ -48,11 +43,7 @@ module Phase5
           if key == keys.last
             ref[key] = value
           else
-            if ref[key]
-              ref = ref[key]
-            else
-              ref = (ref[key] = {})
-            end
+            ref = ref[key] ? ref[key] : (ref[key] = {})
           end
         end
       end
